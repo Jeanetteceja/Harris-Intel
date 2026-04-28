@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Texas Multi-County Motivated Seller Leads</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080a0d;color:#bcc8d8;font-family:'Segoe UI',sans-serif;font-size:13px}
+header{background:#0f1318;border-bottom:3px solid #e8410a;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:12px}
+h1{color:#fff;font-size:1.7rem;letter-spacing:.04em}
+.badge{background:#e8410a;color:#fff;font-size:.58rem;padding:3px 9px;border-radius:2px;text-transform:uppercase;font-weight:700;letter-spacing:.1em}
+.meta{font-size:.65rem;color:#4e5f72;text-align:right;line-height:1.8}
+.meta b{color:#00b87a}
+
+/* county tabs */
+.county-tabs{display:flex;background:#0f1318;border-bottom:1px solid #1c222c;overflow-x:auto;gap:1px}
+.tab{padding:10px 20px;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;color:#4e5f72;border-bottom:2px solid transparent;transition:all .15s}
+.tab:hover{color:#bcc8d8}
+.tab.active{color:#e8410a;border-bottom-color:#e8410a;background:#111}
+.tab-count{background:#1c222c;color:#4e5f72;font-size:.55rem;padding:1px 6px;border-radius:10px;margin-left:5px}
+.tab.active .tab-count{background:rgba(232,65,10,.2);color:#e8410a}
+
+/* KPI bar */
+.kpi-bar{display:flex;background:#0f1318;border-bottom:1px solid #1c222c;flex-wrap:wrap}
+.kpi{flex:1;min-width:100px;padding:12px 18px;border-right:1px solid #1c222c}
+.kpi-label{font-size:.56rem;text-transform:uppercase;letter-spacing:.13em;color:#4e5f72;margin-bottom:5px}
+.kpi-val{font-size:1.7rem;font-weight:700;color:#fff}
+.kv-red{color:#e8410a}.kv-green{color:#00b87a}.kv-amber{color:#f0a500}.kv-blue{color:#3b9eff}
+
+/* toolbar */
+.toolbar{display:flex;align-items:center;gap:8px;padding:9px 18px;background:#0f1318;border-bottom:1px solid #1c222c;flex-wrap:wrap}
+input,select{background:#080a0d;border:1px solid #252d3a;color:#bcc8d8;font-size:.7rem;padding:5px 9px;border-radius:2px;outline:none}
+input:focus,select:focus{border-color:#e8410a}
+#q{width:200px}
+.lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#4e5f72}
+.spacer{flex:1}
+.btn{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;padding:6px 14px;border:none;border-radius:2px;cursor:pointer}
+.btn-export{background:#e8410a;color:#fff}
+.btn-reset{background:#252d3a;color:#bcc8d8}
+
+/* table */
+.tbl-wrap{overflow-x:auto;padding-bottom:50px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#0f1318;border-bottom:2px solid #e8410a;position:sticky;top:55px;z-index:100}
+th{font-size:.57rem;text-transform:uppercase;letter-spacing:.11em;color:#4e5f72;padding:9px 12px;text-align:left;white-space:nowrap;cursor:pointer}
+th:hover{color:#bcc8d8}
+th.asc::after{content:" ↑";color:#e8410a}th.desc::after{content:" ↓";color:#e8410a}
+tbody tr{border-bottom:1px solid #1c222c;transition:background .1s}
+tbody tr:hover{background:rgba(232,65,10,.05)}
+td{padding:8px 12px;font-size:.68rem;vertical-align:top;white-space:nowrap}
+td.wrap{white-space:normal;max-width:180px}
+
+/* county badge in table */
+.county-badge{font-size:.55rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:2px;font-weight:600;white-space:nowrap}
+.cb-harris    {background:rgba(232,65,10,.2);color:#e8410a}
+.cb-fort_bend {background:rgba(59,158,255,.15);color:#3b9eff}
+.cb-montgomery{background:rgba(0,184,122,.15);color:#00b87a}
+.cb-galveston {background:rgba(155,109,255,.18);color:#b090ff}
+.cb-dallas    {background:rgba(240,165,0,.18);color:#f0a500}
+
+/* score pills */
+.pill{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:2px;min-width:32px;text-align:center}
+.hi {background:rgba(232,65,10,.2);color:#e8410a;border:1px solid rgba(232,65,10,.4)}
+.mid{background:rgba(240,165,0,.15);color:#f0a500;border:1px solid rgba(240,165,0,.3)}
+.lo {background:rgba(37,45,58,.8);color:#4e5f72;border:1px solid #252d3a}
+
+/* flag chips */
+.chips{display:flex;flex-wrap:wrap;gap:3px;max-width:240px}
+.chip{font-size:.53rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 5px;border-radius:2px;white-space:nowrap}
+.c-lp  {background:rgba(232,65,10,.2);color:#f07050}
+.c-fc  {background:rgba(255,60,80,.18);color:#ff6b7a}
+.c-jud {background:rgba(240,165,0,.18);color:#f0a500}
+.c-tax {background:rgba(255,220,50,.12);color:#f0c040}
+.c-mech{background:rgba(0,184,122,.15);color:#00b87a}
+.c-prob{background:rgba(155,109,255,.18);color:#b090ff}
+.c-llc {background:rgba(59,158,255,.15);color:#3b9eff}
+.c-new {background:rgba(0,220,120,.18);color:#00dc78}
+.c-def {background:#252d3a;color:#4e5f72}
+
+a.ext{color:#3b9eff;font-size:.62rem;text-decoration:none}
+a.ext:hover{text-decoration:underline}
+.empty{text-align:center;padding:70px 20px;color:#4e5f72;font-size:.9rem}
+.empty .ico{font-size:2.5rem;margin-bottom:14px}
+.statusbar{position:fixed;bottom:0;left:0;right:0;background:#0f1318;border-top:1px solid #1c222c;padding:7px 20px;font-size:.6rem;color:#4e5f72;display:flex;gap:20px}
+.statusbar b{color:#bcc8d8}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1>Texas Multi-County Leads</h1>
+    <span class="badge">5 Counties · Motivated Sellers</span>
+  </div>
+  <div class="meta" id="meta">Loading…</div>
+</header>
+
+<!-- County tabs -->
+<div class="county-tabs" id="county-tabs">
+  <div class="tab active" data-county="" onclick="setCounty('')">
+    All Counties <span class="tab-count" id="tc-all">—</span>
+  </div>
+  <div class="tab" data-county="harris" onclick="setCounty('harris')">
+    Harris <span class="tab-count" id="tc-harris">—</span>
+  </div>
+  <div class="tab" data-county="fort_bend" onclick="setCounty('fort_bend')">
+    Fort Bend <span class="tab-count" id="tc-fort_bend">—</span>
+  </div>
+  <div class="tab" data-county="montgomery" onclick="setCounty('montgomery')">
+    Montgomery <span class="tab-count" id="tc-montgomery">—</span>
+  </div>
+  <div class="tab" data-county="galveston" onclick="setCounty('galveston')">
+    Galveston <span class="tab-count" id="tc-galveston">—</span>
+  </div>
+  <div class="tab" data-county="dallas" onclick="setCounty('dallas')">
+    Dallas <span class="tab-count" id="tc-dallas">—</span>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-bar">
+  <div class="kpi"><div class="kpi-label">Total Leads</div><div class="kpi-val kv-red"   id="k-total">—</div></div>
+  <div class="kpi"><div class="kpi-label">With Address</div><div class="kpi-val kv-green" id="k-addr">—</div></div>
+  <div class="kpi"><div class="kpi-label">Score ≥ 70</div><div class="kpi-val kv-amber"  id="k-high">—</div></div>
+  <div class="kpi"><div class="kpi-label">Lis Pendens</div><div class="kpi-val kv-blue"  id="k-lp">—</div></div>
+  <div class="kpi"><div class="kpi-label">Foreclosure</div><div class="kpi-val"          id="k-fc">—</div></div>
+  <div class="kpi"><div class="kpi-label">Judgments</div><div class="kpi-val"            id="k-jud">—</div></div>
+  <div class="kpi"><div class="kpi-label">Liens</div><div class="kpi-val"                id="k-ln">—</div></div>
+  <div class="kpi"><div class="kpi-label">New This Week</div><div class="kpi-val kv-green" id="k-new">—</div></div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <span class="lbl">Search</span>
+  <input id="q" type="text" placeholder="Owner, doc #, address…" oninput="applyFilters()"/>
+  <span class="lbl">Type</span>
+  <select id="f-cat" onchange="applyFilters()">
+    <option value="">All Types</option>
+    <option value="LP">Lis Pendens</option>
+    <option value="NOFC">Foreclosure</option>
+    <option value="TAXDEED">Tax Deed</option>
+    <option value="JUD">Judgment</option>
+    <option value="LN">Lien</option>
+    <option value="PRO">Probate</option>
+    <option value="NOC">Notice of Commencement</option>
+  </select>
+  <span class="lbl">Min Score</span>
+  <select id="f-score" onchange="applyFilters()">
+    <option value="0">Any</option>
+    <option value="50">50+</option>
+    <option value="60">60+</option>
+    <option value="70">70+</option>
+    <option value="80">80+</option>
+  </select>
+  <span class="lbl">Address</span>
+  <select id="f-addr" onchange="applyFilters()">
+    <option value="">All</option>
+    <option value="yes">Has Address</option>
+    <option value="no">No Address</option>
+  </select>
+  <div class="spacer"></div>
+  <button class="btn btn-reset"  onclick="resetFilters()">Reset</button>
+  <button class="btn btn-export" onclick="exportCSV()">⬇ Export GHL CSV</button>
+</div>
+
+<!-- Table -->
+<div class="tbl-wrap">
+<table>
+  <thead><tr id="thead">
+    <th data-key="score"       onclick="sortBy('score')">Score</th>
+    <th data-key="county"      onclick="sortBy('county')">County</th>
+    <th data-key="filed"       onclick="sortBy('filed')">Filed</th>
+    <th data-key="cat_label"   onclick="sortBy('cat_label')">Lead Type</th>
+    <th data-key="doc_num"     onclick="sortBy('doc_num')">Doc #</th>
+    <th data-key="owner"       onclick="sortBy('owner')">Owner</th>
+    <th data-key="amount"      onclick="sortBy('amount')">Amount</th>
+    <th data-key="prop_address" onclick="sortBy('prop_address')">Property Address</th>
+    <th data-key="mail_address" onclick="sortBy('mail_address')">Mailing Address</th>
+    <th>Flags</th>
+    <th>Link</th>
+  </tr></thead>
+  <tbody id="tbody">
+    <tr><td colspan="11"><div class="empty"><div class="ico">⏳</div>Loading leads…</div></td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="statusbar">
+  <span>TX Multi-County Clerk Records</span>
+  <span id="sb-range"></span>
+  <span id="sb-count"></span>
+</div>
+
+<script>
+/* ── data ── */
+let ALL=[], FILTERED=[], SORT_KEY='score', SORT_DIR=-1, ACTIVE_COUNTY='';
+
+const COUNTY_CLASS = {
+  harris:'cb-harris', fort_bend:'cb-fort_bend',
+  montgomery:'cb-montgomery', galveston:'cb-galveston', dallas:'cb-dallas'
+};
+const FLAG_CLASS = {
+  'Lis pendens':'c-lp','Pre-foreclosure':'c-fc','Judgment lien':'c-jud',
+  'Tax lien':'c-tax','Mechanic lien':'c-mech','Probate / estate':'c-prob',
+  'LLC / corp owner':'c-llc','New this week':'c-new'
+};
+
+/* ── boot ── */
+async function boot(){
+  try{
+    const r = await fetch('records.json?_='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    ALL = data.records || [];
+    updateTabs();
+    updateKPIs(ALL);
+    const dr = data.date_range||{};
+    document.getElementById('meta').innerHTML =
+      'Fetched <b>'+(data.fetched_at||'').slice(0,10)+'</b> &nbsp;|&nbsp; '+
+      'Range <b>'+(dr.from||'')+'→'+(dr.to||'')+'</b> &nbsp;|&nbsp; '+
+      (data.counties||[]).length+' counties';
+    document.getElementById('sb-range').innerHTML =
+      'Range <b>'+(dr.from||'')+'→'+(dr.to||'')+'</b>';
+    applyFilters();
+  } catch(e) {
+    document.getElementById('meta').textContent = 'No data yet — run the scraper!';
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="11"><div class="empty"><div class="ico">📭</div>'+
+      'No records yet.<br>Run <code>python scraper/fetch.py</code> to generate leads.</div></td></tr>';
+  }
+}
+
+/* ── tabs ── */
+function updateTabs(){
+  const counties = ['harris','fort_bend','montgomery','galveston','dallas'];
+  document.getElementById('tc-all').textContent = ALL.length;
+  counties.forEach(c=>{
+    const n = ALL.filter(r=>r.county_key===c).length;
+    const el = document.getElementById('tc-'+c);
+    if(el) el.textContent = n;
+  });
+}
+
+function setCounty(county){
+  ACTIVE_COUNTY = county;
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.county===county);
+  });
+  applyFilters();
+}
+
+/* ── KPIs ── */
+function updateKPIs(records){
+  document.getElementById('k-total').textContent = records.length;
+  document.getElementById('k-addr').textContent  = records.filter(r=>r.prop_address||r.mail_address).length;
+  document.getElementById('k-high').textContent  = records.filter(r=>(r.score||0)>=70).length;
+  document.getElementById('k-lp').textContent    = records.filter(r=>r.cat==='LP').length;
+  document.getElementById('k-fc').textContent    = records.filter(r=>r.cat==='NOFC').length;
+  document.getElementById('k-jud').textContent   = records.filter(r=>r.cat==='JUD').length;
+  document.getElementById('k-ln').textContent    = records.filter(r=>r.cat==='LN').length;
+  document.getElementById('k-new').textContent   = records.filter(r=>(r.flags||[]).includes('New this week')).length;
+}
+
+/* ── filters ── */
+function applyFilters(){
+  const q    = document.getElementById('q').value.toLowerCase();
+  const cat  = document.getElementById('f-cat').value;
+  const minS = parseInt(document.getElementById('f-score').value)||0;
+  const addr = document.getElementById('f-addr').value;
+
+  FILTERED = ALL.filter(r=>{
+    if(ACTIVE_COUNTY && r.county_key !== ACTIVE_COUNTY) return false;
+    const t = [r.doc_num,r.owner,r.prop_address,r.mail_address,r.county,r.doc_type].join(' ').toLowerCase();
+    if(q   && !t.includes(q))                          return false;
+    if(cat && r.cat!==cat)                             return false;
+    if((r.score||0)<minS)                              return false;
+    if(addr==='yes'&&!r.prop_address&&!r.mail_address) return false;
+    if(addr==='no' &&(r.prop_address||r.mail_address)) return false;
+    return true;
+  });
+
+  FILTERED.sort((a,b)=>{
+    let av=a[SORT_KEY]??'', bv=b[SORT_KEY]??'';
+    if(typeof av==='string') av=av.toLowerCase();
+    if(typeof bv==='string') bv=bv.toLowerCase();
+    return av<bv?SORT_DIR:av>bv?-SORT_DIR:0;
+  });
+
+  updateKPIs(FILTERED);
+  render();
+  document.getElementById('sb-count').innerHTML =
+    '<b>'+FILTERED.length+'</b> of '+ALL.length+' records';
+}
+
+function resetFilters(){
+  document.getElementById('q').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('f-score').value='0';
+  document.getElementById('f-addr').value='';
+  applyFilters();
+}
+
+function sortBy(key){
+  SORT_DIR = SORT_KEY===key ? SORT_DIR*-1 : -1;
+  SORT_KEY = key;
+  document.querySelectorAll('th').forEach(th=>{
+    th.classList.remove('asc','desc');
+    if(th.dataset.key===key) th.classList.add(SORT_DIR===1?'asc':'desc');
+  });
+  applyFilters();
+}
+
+/* ── render ── */
+function render(){
+  const tbody = document.getElementById('tbody');
+  if(!FILTERED.length){
+    tbody.innerHTML='<tr><td colspan="11"><div class="empty"><div class="ico">🔍</div>No records match your filters.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = FILTERED.map(r=>{
+    const s  = r.score||30;
+    const pc = s>=70?'hi':s>=50?'mid':'lo';
+    const cc = COUNTY_CLASS[r.county_key]||'c-def';
+    const chips = (r.flags||[]).map(f=>'<span class="chip '+(FLAG_CLASS[f]||'c-def')+'">'+f+'</span>').join('')||'<span class="chip c-def">—</span>';
+    const amt   = r.amount!=null?'$'+Number(r.amount).toLocaleString():'—';
+    const prop  = [r.prop_address,r.prop_city,r.prop_state,r.prop_zip].filter(Boolean).join(', ')||'—';
+    const mail  = [r.mail_address,r.mail_city,r.mail_state,r.mail_zip].filter(Boolean).join(', ')||'—';
+    const link  = r.clerk_url?'<a class="ext" href="'+x(r.clerk_url)+'" target="_blank">View ↗</a>':'—';
+    return '<tr>'+
+      '<td><span class="pill '+pc+'">'+s+'</span></td>'+
+      '<td><span class="county-badge '+cc+'">'+(r.county||'—').replace(' County','')+'</span></td>'+
+      '<td>'+x(r.filed||'—')+'</td>'+
+      '<td>'+x(r.cat_label||'—')+'</td>'+
+      '<td style="color:#3b9eff">'+x(r.doc_num||'—')+'</td>'+
+      '<td class="wrap">'+x(r.owner||'—')+'</td>'+
+      '<td>'+amt+'</td>'+
+      '<td class="wrap">'+x(prop)+'</td>'+
+      '<td class="wrap">'+x(mail)+'</td>'+
+      '<td><div class="chips">'+chips+'</div></td>'+
+      '<td>'+link+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+/* ── CSV export ── */
+function exportCSV(){
+  const cols=['First Name','Last Name','Mailing Address','Mailing City','Mailing State',
+    'Mailing Zip','Property Address','Property City','Property State','Property Zip',
+    'County','Lead Type','Document Type','Date Filed','Document Number',
+    'Amount/Debt Owed','Seller Score','Motivated Seller Flags','Source','Public Records URL'];
+  const lines=[cols.join(',')];
+  FILTERED.forEach(r=>{
+    const p=(r.owner||'').replace(/,/g,' ').split(/\s+/);
+    const cells=[
+      p[0]||'', p.slice(1).join(' ')||'',
+      r.mail_address||'',r.mail_city||'',r.mail_state||'TX',r.mail_zip||'',
+      r.prop_address||'',r.prop_city||'',r.prop_state||'TX',r.prop_zip||'',
+      r.county||'',r.cat_label||'',r.doc_type||'',r.filed||'',r.doc_num||'',
+      r.amount!=null?r.amount:'',r.score||30,
+      (r.flags||[]).join('; '),
+      (r.county||'')+' Clerk',r.clerk_url||''
+    ].map(v=>'"'+String(v).replace(/"/g,'""')+'"');
+    lines.push(cells.join(','));
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/csv'}));
+  a.download='texas_leads_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+function x(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+boot();
+</script>
+</body>
+</html>
