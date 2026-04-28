@@ -1,1 +1,215 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Harris County — Motivated Seller Leads</title>
+<style>
+:root{--bg:#080a0d;--surface:#0f1318;--border:#1c222c;--muted:#252d3a;--text:#bcc8d8;--dim:#4e5f72;--accent:#e8410a;--amber:#f0a500;--green:#00b87a;--blue:#3b9eff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;font-size:13px;}
+header{background:var(--surface);border-bottom:2px solid var(--accent);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+h1{font-size:1.6rem;color:#fff;letter-spacing:.05em;}
+.badge{background:var(--accent);color:#fff;font-size:.6rem;padding:3px 8px;border-radius:2px;margin-left:10px;text-transform:uppercase;}
+.meta{font-size:.65rem;color:var(--dim);}
+.meta b{color:var(--green);}
+.kpi-bar{display:flex;background:var(--surface);border-bottom:1px solid var(--border);}
+.kpi{flex:1;padding:12px 18px;border-right:1px solid var(--border);}
+.kpi-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:4px;}
+.kpi-val{font-size:1.6rem;color:#fff;font-weight:700;}
+.kv-accent{color:var(--accent)}.kv-green{color:var(--green)}.kv-amber{color:var(--amber)}.kv-blue{color:var(--blue)}
+.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--border);}
+.toolbar label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);}
+.toolbar input,.toolbar select{background:var(--bg);border:1px solid var(--muted);color:var(--text);font-size:.7rem;padding:5px 9px;border-radius:2px;outline:none;}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
+#q{width:200px;}
+.spacer{flex:1;}
+.btn{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border:none;border-radius:2px;cursor:pointer;}
+.btn-export{background:var(--accent);color:#fff;}
+.btn-clear{background:var(--muted);color:var(--text);}
+.tbl-wrap{overflow-x:auto;padding-bottom:50px;}
+table{width:100%;border-collapse:collapse;min-width:1100px;}
+thead tr{background:var(--surface);border-bottom:2px solid var(--accent);position:sticky;top:57px;z-index:100;}
+th{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);padding:9px 12px;text-align:left;cursor:pointer;white-space:nowrap;}
+th:hover{color:var(--text);}
+th.asc::after{content:" ↑";color:var(--accent);}th.desc::after{content:" ↓";color:var(--accent);}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:hover{background:rgba(232,65,10,.06);}
+td{padding:8px 12px;font-size:.68rem;vertical-align:top;white-space:nowrap;}
+td.wrap{white-space:normal;max-width:180px;}
+.pill{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:2px;min-width:32px;text-align:center;}
+.pill-hi{background:rgba(232,65,10,.2);color:var(--accent);border:1px solid rgba(232,65,10,.5);}
+.pill-mid{background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.4);}
+.pill-lo{background:rgba(37,45,58,.6);color:var(--dim);border:1px solid var(--border);}
+.chips{display:flex;flex-wrap:wrap;gap:3px;max-width:260px;}
+.chip{font-size:.55rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:2px;white-space:nowrap;}
+.c-lp{background:rgba(232,65,10,.2);color:#f07050;}
+.c-fc{background:rgba(255,60,80,.18);color:#ff6b7a;}
+.c-jud{background:rgba(240,165,0,.18);color:#f0a500;}
+.c-tax{background:rgba(255,220,50,.12);color:#f0c040;}
+.c-mech{background:rgba(0,184,122,.15);color:#00b87a;}
+.c-prob{background:rgba(155,109,255,.18);color:#b090ff;}
+.c-llc{background:rgba(59,158,255,.15);color:#3b9eff;}
+.c-new{background:rgba(0,220,120,.18);color:#00dc78;}
+.c-def{background:var(--muted);color:var(--dim);}
+a.ext{color:var(--blue);font-size:.62rem;text-decoration:none;}
+a.ext:hover{text-decoration:underline;}
+.empty{text-align:center;padding:80px 20px;color:var(--dim);}
+.empty .icon{font-size:2.5rem;margin-bottom:14px;}
+.status-bar{position:fixed;bottom:0;left:0;right:0;height:34px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;padding:0 20px;font-size:.6rem;color:var(--dim);}
+.status-bar b{color:var(--text);}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center">
+    <h1>Harris County Leads</h1>
+    <span class="badge">TX · Motivated Sellers</span>
+  </div>
+  <div class="meta" id="meta">Loading…</div>
+</header>
+<div class="kpi-bar">
+  <div class="kpi"><div class="kpi-label">Total Leads</div><div class="kpi-val kv-accent" id="k-total">—</div></div>
+  <div class="kpi"><div class="kpi-label">With Address</div><div class="kpi-val kv-green" id="k-addr">—</div></div>
+  <div class="kpi"><div class="kpi-label">Score ≥ 70</div><div class="kpi-val kv-amber" id="k-high">—</div></div>
+  <div class="kpi"><div class="kpi-label">Lis Pendens</div><div class="kpi-val kv-blue" id="k-lp">—</div></div>
+  <div class="kpi"><div class="kpi-label">Pre-Foreclosure</div><div class="kpi-val" id="k-fc">—</div></div>
+  <div class="kpi"><div class="kpi-label">New This Week</div><div class="kpi-val kv-green" id="k-new">—</div></div>
+</div>
+<div class="toolbar">
+  <label for="q">Search</label>
+  <input id="q" type="text" placeholder="Owner, doc #, address…" oninput="applyFilters()" />
+  <label for="f-cat">Type</label>
+  <select id="f-cat" onchange="applyFilters()">
+    <option value="">All Types</option>
+    <option value="LP">Lis Pendens</option>
+    <option value="NOFC">Foreclosure</option>
+    <option value="TAXDEED">Tax Deed</option>
+    <option value="JUD">Judgment</option>
+    <option value="LN">Lien</option>
+    <option value="PRO">Probate</option>
+  </select>
+  <label for="f-score">Min Score</label>
+  <select id="f-score" onchange="applyFilters()">
+    <option value="0">Any</option>
+    <option value="50">50+</option>
+    <option value="60">60+</option>
+    <option value="70">70+</option>
+    <option value="80">80+</option>
+  </select>
+  <div class="spacer"></div>
+  <button class="btn btn-clear" onclick="resetFilters()">Reset</button>
+  <button class="btn btn-export" onclick="exportCSV()">⬇ Export GHL CSV</button>
+</div>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr id="thead-row">
+      <th data-key="score" onclick="sortBy('score')">Score</th>
+      <th data-key="filed" onclick="sortBy('filed')">Filed</th>
+      <th data-key="cat_label" onclick="sortBy('cat_label')">Lead Type</th>
+      <th data-key="doc_num" onclick="sortBy('doc_num')">Doc #</th>
+      <th data-key="owner" onclick="sortBy('owner')">Owner</th>
+      <th data-key="amount" onclick="sortBy('amount')">Amount</th>
+      <th data-key="prop_address" onclick="sortBy('prop_address')">Property Address</th>
+      <th data-key="mail_address" onclick="sortBy('mail_address')">Mailing Address</th>
+      <th>Flags</th>
+      <th>Link</th>
+    </tr></thead>
+    <tbody id="tbody">
+      <tr><td colspan="10"><div class="empty"><div class="icon">⏳</div>Loading leads…</div></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="status-bar">
+  <span>Harris County Clerk · cclerk.hctx.net</span>
+  <span id="sb-range"></span>
+  <span id="sb-count"></span>
+</div>
+<script>
+let ALL=[],FILTERED=[],SORT_KEY='score',SORT_DIR=-1;
+const FCLASS={'Lis pendens':'c-lp','Pre-foreclosure':'c-fc','Judgment lien':'c-jud','Tax lien':'c-tax','Mechanic lien':'c-mech','Probate / estate':'c-prob','LLC / corp owner':'c-llc','New this week':'c-new'};
+async function boot(){
+  try{
+    const r=await fetch('records.json?_='+Date.now());
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    ALL=data.records||[];
+    document.getElementById('k-total').textContent=ALL.length;
+    document.getElementById('k-addr').textContent=data.with_address||0;
+    document.getElementById('k-high').textContent=ALL.filter(r=>(r.score||0)>=70).length;
+    document.getElementById('k-lp').textContent=ALL.filter(r=>r.cat==='LP').length;
+    document.getElementById('k-fc').textContent=ALL.filter(r=>r.cat==='NOFC').length;
+    document.getElementById('k-new').textContent=ALL.filter(r=>(r.flags||[]).includes('New this week')).length;
+    const dr=data.date_range||{};
+    document.getElementById('meta').innerHTML='Fetched <b>'+(data.fetched_at||'').slice(0,10)+'</b> | Range <b>'+(dr.from||'')+'→'+(dr.to||'')+'</b>';
+    document.getElementById('sb-range').innerHTML='Range <b>'+(dr.from||'')+'→'+(dr.to||'')+'</b>';
+    applyFilters();
+  }catch(e){
+    document.getElementById('meta').textContent='No data yet — run the scraper first.';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty"><div class="icon">📭</div>No records yet.<br>Run the scraper to generate leads.</div></td></tr>';
+  }
+}
+function applyFilters(){
+  const q=document.getElementById('q').value.toLowerCase();
+  const cat=document.getElementById('f-cat').value;
+  const minS=parseInt(document.getElementById('f-score').value)||0;
+  FILTERED=ALL.filter(r=>{
+    const t=[r.doc_num,r.owner,r.prop_address,r.mail_address,r.doc_type].join(' ').toLowerCase();
+    if(q&&!t.includes(q))return false;
+    if(cat&&r.cat!==cat)return false;
+    if((r.score||0)<minS)return false;
+    return true;
+  });
+  FILTERED.sort((a,b)=>{
+    let av=a[SORT_KEY]??'',bv=b[SORT_KEY]??'';
+    if(typeof av==='string')av=av.toLowerCase();
+    if(typeof bv==='string')bv=bv.toLowerCase();
+    return av<bv?SORT_DIR:av>bv?-SORT_DIR:0;
+  });
+  render();
+  document.getElementById('sb-count').innerHTML='<b>'+FILTERED.length+'</b> of '+ALL.length+' records';
+}
+function resetFilters(){
+  document.getElementById('q').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('f-score').value='0';
+  applyFilters();
+}
+function sortBy(key){
+  SORT_DIR=SORT_KEY===key?SORT_DIR*-1:-1;
+  SORT_KEY=key;
+  document.querySelectorAll('th').forEach(th=>{th.classList.remove('asc','desc');if(th.dataset.key===key)th.classList.add(SORT_DIR===1?'asc':'desc');});
+  applyFilters();
+}
+function render(){
+  const tbody=document.getElementById('tbody');
+  if(!FILTERED.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty"><div class="icon">🔍</div>No records match your filters.</div></td></tr>';return;}
+  tbody.innerHTML=FILTERED.map(r=>{
+    const s=r.score||30;
+    const pc=s>=70?'pill-hi':s>=50?'pill-mid':'pill-lo';
+    const chips=(r.flags||[]).map(f=>'<span class="chip '+(FCLASS[f]||'c-def')+'">'+f+'</span>').join('')||'<span class="chip c-def">—</span>';
+    const amt=r.amount!=null?'$'+Number(r.amount).toLocaleString():'—';
+    const prop=[r.prop_address,r.prop_city,r.prop_state,r.prop_zip].filter(Boolean).join(', ')||'—';
+    const mail=[r.mail_address,r.mail_city,r.mail_state,r.mail_zip].filter(Boolean).join(', ')||'—';
+    const link=r.clerk_url?'<a class="ext" href="'+x(r.clerk_url)+'" target="_blank">View ↗</a>':'—';
+    return '<tr><td><span class="pill '+pc+'">'+s+'</span></td><td>'+x(r.filed||'—')+'</td><td>'+x(r.cat_label||'—')+'</td><td style="color:#3b9eff">'+x(r.doc_num||'—')+'</td><td class="wrap">'+x(r.owner||'—')+'</td><td>'+amt+'</td><td class="wrap">'+x(prop)+'</td><td class="wrap">'+x(mail)+'</td><td><div class="chips">'+chips+'</div></td><td>'+link+'</td></tr>';
+  }).join('');
+}
+function exportCSV(){
+  const cols=['First Name','Last Name','Mailing Address','Mailing City','Mailing State','Mailing Zip','Property Address','Property City','Property State','Property Zip','Lead Type','Document Type','Date Filed','Document Number','Amount/Debt Owed','Seller Score','Motivated Seller Flags','Source','Public Records URL'];
+  const lines=[cols.join(',')];
+  FILTERED.forEach(r=>{
+    const p=(r.owner||'').replace(/,/g,' ').split(/\s+/);
+    const cells=[p[0]||'',p.slice(1).join(' ')||'',r.mail_address||'',r.mail_city||'',r.mail_state||'TX',r.mail_zip||'',r.prop_address||'',r.prop_city||'',r.prop_state||'TX',r.prop_zip||'',r.cat_label||'',r.doc_type||'',r.filed||'',r.doc_num||'',r.amount!=null?r.amount:'',r.score||30,(r.flags||[]).join('; '),'Harris County Clerk',r.clerk_url||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"');
+    lines.push(cells.join(','));
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/csv'}));
+  a.download='harris_leads_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+function x(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+boot();
+</script>
+</body>
+</html>
