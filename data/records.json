@@ -1,1 +1,12 @@
-
+{
+  "fetched_at": "2026-04-29T04:54:54.832233Z",
+  "source": "Texas Multi-County Clerk Records",
+  "counties": [],
+  "date_range": {
+    "from": "2026-04-22",
+    "to": "2026-04-29"
+  },
+  "total": 0,
+  "with_address": 0,
+  "records": []
+}
