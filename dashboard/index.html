@@ -3,133 +3,204 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Harris County Leads</title>
+<title>Texas Multi-County Leads</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080a0d;color:#bcc8d8;font-family:'Segoe UI',sans-serif;font-size:13px}
-header{background:#0f1318;border-bottom:3px solid #e8410a;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
-h1{color:#fff;font-size:1.8rem;letter-spacing:.05em}
-.badge{background:#e8410a;color:#fff;font-size:.6rem;padding:3px 10px;border-radius:2px;margin-left:12px;text-transform:uppercase;font-weight:700}
-.kpi-bar{display:flex;background:#0f1318;border-bottom:1px solid #1c222c}
-.kpi{flex:1;padding:14px 20px;border-right:1px solid #1c222c}
-.kpi-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:#4e5f72;margin-bottom:6px}
-.kpi-val{font-size:1.8rem;font-weight:700;color:#fff}
-.toolbar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:#0f1318;border-bottom:1px solid #1c222c;flex-wrap:wrap}
-input,select{background:#080a0d;border:1px solid #252d3a;color:#bcc8d8;font-size:.7rem;padding:6px 10px;border-radius:2px;outline:none}
-input{width:220px}
-.btn{font-size:.65rem;font-weight:700;text-transform:uppercase;padding:7px 16px;border:none;border-radius:2px;cursor:pointer}
-.btn-export{background:#e8410a;color:#fff}
+header{background:#0f1318;border-bottom:3px solid #e8410a;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+h1{color:#fff;font-size:1.7rem;letter-spacing:.04em}
+.badge{background:#e8410a;color:#fff;font-size:.58rem;padding:3px 9px;border-radius:2px;text-transform:uppercase;font-weight:700;margin-left:10px}
+.tabs{display:flex;background:#0f1318;border-bottom:1px solid #1c222c;overflow-x:auto}
+.tab{padding:10px 18px;font-size:.68rem;font-weight:600;text-transform:uppercase;cursor:pointer;color:#4e5f72;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active{color:#e8410a;border-bottom-color:#e8410a}
+.tc{background:#1c222c;color:#4e5f72;font-size:.55rem;padding:1px 6px;border-radius:10px;margin-left:4px}
+.tab.active .tc{background:rgba(232,65,10,.2);color:#e8410a}
+.kpi-bar{display:flex;background:#0f1318;border-bottom:1px solid #1c222c;flex-wrap:wrap}
+.kpi{flex:1;min-width:100px;padding:12px 18px;border-right:1px solid #1c222c}
+.kl{font-size:.56rem;text-transform:uppercase;letter-spacing:.13em;color:#4e5f72;margin-bottom:5px}
+.kv{font-size:1.7rem;font-weight:700;color:#fff}
+.toolbar{display:flex;align-items:center;gap:8px;padding:9px 18px;background:#0f1318;border-bottom:1px solid #1c222c;flex-wrap:wrap}
+input,select{background:#080a0d;border:1px solid #252d3a;color:#bcc8d8;font-size:.7rem;padding:5px 9px;border-radius:2px;outline:none}
+input:focus,select:focus{border-color:#e8410a}
+#q{width:200px}
 .spacer{flex:1}
+.btn{font-size:.63rem;font-weight:700;text-transform:uppercase;padding:6px 14px;border:none;border-radius:2px;cursor:pointer}
+.btn-e{background:#e8410a;color:#fff}
+.btn-r{background:#252d3a;color:#bcc8d8}
 .tbl-wrap{overflow-x:auto;padding-bottom:50px}
-table{width:100%;border-collapse:collapse;min-width:1000px}
-thead tr{background:#0f1318;border-bottom:2px solid #e8410a}
-th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#4e5f72;padding:10px 14px;text-align:left;white-space:nowrap}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#0f1318;border-bottom:2px solid #e8410a;position:sticky;top:55px;z-index:100}
+th{font-size:.57rem;text-transform:uppercase;letter-spacing:.1em;color:#4e5f72;padding:9px 12px;text-align:left;white-space:nowrap;cursor:pointer}
+th:hover{color:#bcc8d8}
+th.asc::after{content:" ↑";color:#e8410a}th.desc::after{content:" ↓";color:#e8410a}
 tbody tr{border-bottom:1px solid #1c222c}
-tbody tr:hover{background:rgba(232,65,10,.06)}
-td{padding:9px 14px;font-size:.7rem;vertical-align:top;white-space:nowrap}
-td.wrap{white-space:normal;max-width:200px}
-.pill{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:2px;text-align:center;min-width:36px}
+tbody tr:hover{background:rgba(232,65,10,.05)}
+td{padding:8px 12px;font-size:.68rem;vertical-align:top;white-space:nowrap}
+td.w{white-space:normal;max-width:180px}
+.cb{font-size:.55rem;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:600}
+.cb-harris{background:rgba(232,65,10,.2);color:#e8410a}
+.cb-fort_bend{background:rgba(59,158,255,.15);color:#3b9eff}
+.cb-montgomery{background:rgba(0,184,122,.15);color:#00b87a}
+.cb-galveston{background:rgba(155,109,255,.18);color:#b090ff}
+.cb-dallas{background:rgba(240,165,0,.18);color:#f0a500}
+.pill{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:2px;min-width:32px;text-align:center}
 .hi{background:rgba(232,65,10,.2);color:#e8410a;border:1px solid rgba(232,65,10,.4)}
 .mid{background:rgba(240,165,0,.15);color:#f0a500;border:1px solid rgba(240,165,0,.3)}
 .lo{background:rgba(37,45,58,.8);color:#4e5f72;border:1px solid #252d3a}
-.chips{display:flex;flex-wrap:wrap;gap:3px;max-width:260px}
-.chip{font-size:.55rem;text-transform:uppercase;padding:2px 6px;border-radius:2px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:3px;max-width:240px}
+.chip{font-size:.53rem;text-transform:uppercase;padding:2px 5px;border-radius:2px;white-space:nowrap}
 .c-lp{background:rgba(232,65,10,.2);color:#f07050}
 .c-fc{background:rgba(255,60,80,.18);color:#ff6b7a}
 .c-jud{background:rgba(240,165,0,.18);color:#f0a500}
 .c-tax{background:rgba(255,220,50,.12);color:#f0c040}
+.c-mech{background:rgba(0,184,122,.15);color:#00b87a}
+.c-prob{background:rgba(155,109,255,.18);color:#b090ff}
 .c-llc{background:rgba(59,158,255,.15);color:#3b9eff}
 .c-new{background:rgba(0,220,120,.18);color:#00dc78}
 .c-def{background:#252d3a;color:#4e5f72}
-a{color:#3b9eff;font-size:.65rem}
-.status{position:fixed;bottom:0;left:0;right:0;background:#0f1318;border-top:1px solid #1c222c;padding:8px 20px;font-size:.62rem;color:#4e5f72}
+a.ext{color:#3b9eff;font-size:.62rem;text-decoration:none}
+.empty{text-align:center;padding:70px 20px;color:#4e5f72}
+.sb{position:fixed;bottom:0;left:0;right:0;background:#0f1318;border-top:1px solid #1c222c;padding:7px 20px;font-size:.6rem;color:#4e5f72;display:flex;gap:20px}
+.sb b{color:#bcc8d8}
 </style>
 </head>
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <h1>Harris County Leads</h1>
-    <span class="badge">TX · Motivated Sellers</span>
+    <h1>Texas Multi-County Leads</h1>
+    <span class="badge">5 Counties · Motivated Sellers</span>
   </div>
-  <div style="font-size:.7rem;color:#4e5f72">Last updated: <b style="color:#00b87a">2026-04-27</b></div>
+  <div style="font-size:.65rem;color:#4e5f72" id="meta">Loading…</div>
 </header>
+<div class="tabs" id="tabs">
+  <div class="tab active" data-c="" onclick="setC('')">All Counties<span class="tc" id="tc-all">—</span></div>
+  <div class="tab" data-c="harris" onclick="setC('harris')">Harris<span class="tc" id="tc-harris">—</span></div>
+  <div class="tab" data-c="fort_bend" onclick="setC('fort_bend')">Fort Bend<span class="tc" id="tc-fort_bend">—</span></div>
+  <div class="tab" data-c="montgomery" onclick="setC('montgomery')">Montgomery<span class="tc" id="tc-montgomery">—</span></div>
+  <div class="tab" data-c="galveston" onclick="setC('galveston')">Galveston<span class="tc" id="tc-galveston">—</span></div>
+  <div class="tab" data-c="dallas" onclick="setC('dallas')">Dallas<span class="tc" id="tc-dallas">—</span></div>
+</div>
 <div class="kpi-bar">
-  <div class="kpi"><div class="kpi-label">Total Leads</div><div class="kpi-val" style="color:#e8410a" id="k-total">3</div></div>
-  <div class="kpi"><div class="kpi-label">With Address</div><div class="kpi-val" style="color:#00b87a" id="k-addr">2</div></div>
-  <div class="kpi"><div class="kpi-label">Score ≥ 70</div><div class="kpi-val" style="color:#f0a500" id="k-high">2</div></div>
-  <div class="kpi"><div class="kpi-label">Lis Pendens</div><div class="kpi-val" style="color:#3b9eff" id="k-lp">1</div></div>
-  <div class="kpi"><div class="kpi-label">Foreclosure</div><div class="kpi-val" id="k-fc">1</div></div>
-  <div class="kpi"><div class="kpi-label">New This Week</div><div class="kpi-val" style="color:#00b87a" id="k-new">2</div></div>
+  <div class="kpi"><div class="kl">Total Leads</div><div class="kv" style="color:#e8410a" id="k-t">—</div></div>
+  <div class="kpi"><div class="kl">With Address</div><div class="kv" style="color:#00b87a" id="k-a">—</div></div>
+  <div class="kpi"><div class="kl">Score ≥ 70</div><div class="kv" style="color:#f0a500" id="k-h">—</div></div>
+  <div class="kpi"><div class="kl">Lis Pendens</div><div class="kv" style="color:#3b9eff" id="k-lp">—</div></div>
+  <div class="kpi"><div class="kl">Foreclosure</div><div class="kv" id="k-fc">—</div></div>
+  <div class="kpi"><div class="kl">Judgments</div><div class="kv" id="k-jud">—</div></div>
+  <div class="kpi"><div class="kl">Liens</div><div class="kv" id="k-ln">—</div></div>
+  <div class="kpi"><div class="kl">New This Week</div><div class="kv" style="color:#00b87a" id="k-n">—</div></div>
 </div>
 <div class="toolbar">
-  <input id="q" type="text" placeholder="Search owner, doc #, address…" oninput="filter()"/>
-  <select id="f-cat" onchange="filter()">
-    <option value="">All Types</option>
-    <option value="LP">Lis Pendens</option>
-    <option value="NOFC">Foreclosure</option>
-    <option value="JUD">Judgment</option>
-    <option value="LN">Lien</option>
-  </select>
+  <input id="q" type="text" placeholder="Search owner, doc #, address…" oninput="go()"/>
+  <select id="fc" onchange="go()"><option value="">All Types</option><option value="LP">Lis Pendens</option><option value="NOFC">Foreclosure</option><option value="TAXDEED">Tax Deed</option><option value="JUD">Judgment</option><option value="LN">Lien</option><option value="PRO">Probate</option></select>
+  <select id="fs" onchange="go()"><option value="0">Any Score</option><option value="50">50+</option><option value="60">60+</option><option value="70">70+</option><option value="80">80+</option></select>
   <div class="spacer"></div>
-  <button class="btn btn-export" onclick="exportCSV()">⬇ Export GHL CSV</button>
+  <button class="btn btn-r" onclick="reset()">Reset</button>
+  <button class="btn btn-e" onclick="csv()">⬇ Export GHL CSV</button>
 </div>
-<div class="tbl-wrap">
-<table>
-<thead><tr>
-  <th>Score</th><th>Filed</th><th>Lead Type</th><th>Doc #</th>
-  <th>Owner</th><th>Amount</th><th>Property Address</th>
-  <th>Mailing Address</th><th>Flags</th><th>Link</th>
-</tr></thead>
-<tbody id="tbody"></tbody>
-</table>
-</div>
-<div class="status">Harris County Clerk · cclerk.hctx.net &nbsp;|&nbsp; <span id="cnt">3 records</span></div>
+<div class="tbl-wrap"><table>
+  <thead><tr>
+    <th data-k="score" onclick="sort('score')">Score</th>
+    <th data-k="county" onclick="sort('county')">County</th>
+    <th data-k="filed" onclick="sort('filed')">Filed</th>
+    <th data-k="cat_label" onclick="sort('cat_label')">Lead Type</th>
+    <th data-k="doc_num" onclick="sort('doc_num')">Doc #</th>
+    <th data-k="owner" onclick="sort('owner')">Owner</th>
+    <th data-k="amount" onclick="sort('amount')">Amount</th>
+    <th>Property Address</th>
+    <th>Mailing Address</th>
+    <th>Flags</th>
+    <th>Link</th>
+  </tr></thead>
+  <tbody id="tb"></tbody>
+</table></div>
+<div class="sb"><span>TX Multi-County Clerk Records</span><span id="sb"></span></div>
 <script>
-const DATA=[
-  {doc_num:"2026-001234",doc_type:"LP",filed:"2026-04-25",cat:"LP",cat_label:"Lis Pendens",owner:"SMITH JOHN",grantee:"BANK OF AMERICA",amount:185000,prop_address:"1234 Memorial Dr",prop_city:"Houston",prop_state:"TX",prop_zip:"77007",mail_address:"1234 Memorial Dr",mail_city:"Houston",mail_state:"TX",mail_zip:"77007",clerk_url:"https://cclerk.hctx.net",flags:["Lis pendens","New this week"],score:75},
-  {doc_num:"2026-001235",doc_type:"NOFC",filed:"2026-04-24",cat:"NOFC",cat_label:"Notice of Foreclosure",owner:"GARCIA MARIA LLC",grantee:"WELLS FARGO",amount:220000,prop_address:"5678 Westheimer Rd",prop_city:"Houston",prop_state:"TX",prop_zip:"77056",mail_address:"PO BOX 1234",mail_city:"Houston",mail_state:"TX",mail_zip:"77056",clerk_url:"https://cclerk.hctx.net",flags:["Pre-foreclosure","LLC / corp owner","New this week"],score:85},
-  {doc_num:"2026-001236",doc_type:"JUD",filed:"2026-04-23",cat:"JUD",cat_label:"Judgment",owner:"JOHNSON ROBERT",grantee:"IRS",amount:95000,prop_address:"",prop_city:"",prop_state:"TX",prop_zip:"",mail_address:"9012 Heights Blvd",mail_city:"Houston",mail_state:"TX",mail_zip:"77008",clerk_url:"https://cclerk.hctx.net",flags:["Judgment lien","Tax lien"],score:65}
-];
-const FC={'Lis pendens':'c-lp','Pre-foreclosure':'c-fc','Judgment lien':'c-jud','Tax lien':'c-tax','LLC / corp owner':'c-llc','New this week':'c-new'};
-let filtered=[...DATA];
-function filter(){
+let ALL=[],F=[],SK='score',SD=-1,AC='';
+const CC={harris:'cb-harris',fort_bend:'cb-fort_bend',montgomery:'cb-montgomery',galveston:'cb-galveston',dallas:'cb-dallas'};
+const FC={'Lis pendens':'c-lp','Pre-foreclosure':'c-fc','Judgment lien':'c-jud','Tax lien':'c-tax','Mechanic lien':'c-mech','Probate / estate':'c-prob','LLC / corp owner':'c-llc','New this week':'c-new'};
+async function boot(){
+  try{
+    const r=await fetch('records.json?_='+Date.now());
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    ALL=d.records||[];
+    updateTabs();
+    const dr=d.date_range||{};
+    document.getElementById('meta').innerHTML='Fetched <b>'+(d.fetched_at||'').slice(0,10)+'</b> | <b>'+ALL.length+'</b> leads | '+(d.counties||[]).length+' counties';
+    go();
+  }catch(e){
+    document.getElementById('meta').textContent='No data yet';
+    document.getElementById('tb').innerHTML='<tr><td colspan="11"><div class="empty">📭 No records yet — run the scraper first.</div></td></tr>';
+  }
+}
+function updateTabs(){
+  document.getElementById('tc-all').textContent=ALL.length;
+  ['harris','fort_bend','montgomery','galveston','dallas'].forEach(c=>{
+    const el=document.getElementById('tc-'+c);
+    if(el)el.textContent=ALL.filter(r=>r.county_key===c).length;
+  });
+}
+function setC(c){
+  AC=c;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.c===c));
+  go();
+}
+function kpis(recs){
+  document.getElementById('k-t').textContent=recs.length;
+  document.getElementById('k-a').textContent=recs.filter(r=>r.prop_address||r.mail_address).length;
+  document.getElementById('k-h').textContent=recs.filter(r=>(r.score||0)>=70).length;
+  document.getElementById('k-lp').textContent=recs.filter(r=>r.cat==='LP').length;
+  document.getElementById('k-fc').textContent=recs.filter(r=>r.cat==='NOFC').length;
+  document.getElementById('k-jud').textContent=recs.filter(r=>r.cat==='JUD').length;
+  document.getElementById('k-ln').textContent=recs.filter(r=>r.cat==='LN').length;
+  document.getElementById('k-n').textContent=recs.filter(r=>(r.flags||[]).includes('New this week')).length;
+}
+function go(){
   const q=document.getElementById('q').value.toLowerCase();
-  const cat=document.getElementById('f-cat').value;
-  filtered=DATA.filter(r=>{
-    const t=[r.doc_num,r.owner,r.prop_address,r.mail_address].join(' ').toLowerCase();
-    if(q&&!t.includes(q))return false;
-    if(cat&&r.cat!==cat)return false;
+  const fc=document.getElementById('fc').value;
+  const fs=parseInt(document.getElementById('fs').value)||0;
+  F=ALL.filter(r=>{
+    if(AC&&r.county_key!==AC)return false;
+    if(q&&![r.doc_num,r.owner,r.prop_address,r.mail_address,r.county].join(' ').toLowerCase().includes(q))return false;
+    if(fc&&r.cat!==fc)return false;
+    if((r.score||0)<fs)return false;
     return true;
   });
+  F.sort((a,b)=>{let av=a[SK]??'',bv=b[SK]??'';if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();return av<bv?SD:av>bv?-SD:0;});
+  kpis(F);
   render();
+  document.getElementById('sb').innerHTML='<b>'+F.length+'</b> of '+ALL.length+' records';
 }
+function reset(){document.getElementById('q').value='';document.getElementById('fc').value='';document.getElementById('fs').value='0';go();}
+function sort(k){SD=SK===k?SD*-1:-1;SK=k;document.querySelectorAll('th').forEach(t=>{t.classList.remove('asc','desc');if(t.dataset.k===k)t.classList.add(SD===1?'asc':'desc');});go();}
 function render(){
-  const tbody=document.getElementById('tbody');
-  document.getElementById('cnt').textContent=filtered.length+' records';
-  tbody.innerHTML=filtered.map(r=>{
-    const s=r.score||30;
-    const pc=s>=70?'hi':s>=50?'mid':'lo';
+  const tb=document.getElementById('tb');
+  if(!F.length){tb.innerHTML='<tr><td colspan="11"><div class="empty">🔍 No records match.</div></td></tr>';return;}
+  tb.innerHTML=F.map(r=>{
+    const s=r.score||30,pc=s>=70?'hi':s>=50?'mid':'lo';
     const chips=(r.flags||[]).map(f=>'<span class="chip '+(FC[f]||'c-def')+'">'+f+'</span>').join('');
-    const amt=r.amount?'$'+r.amount.toLocaleString():'—';
+    const amt=r.amount!=null?'$'+Number(r.amount).toLocaleString():'—';
     const prop=[r.prop_address,r.prop_city,r.prop_state,r.prop_zip].filter(Boolean).join(', ')||'—';
     const mail=[r.mail_address,r.mail_city,r.mail_state,r.mail_zip].filter(Boolean).join(', ')||'—';
-    const link=r.clerk_url?'<a href="'+r.clerk_url+'" target="_blank">View ↗</a>':'—';
-    return '<tr><td><span class="pill '+pc+'">'+s+'</span></td><td>'+r.filed+'</td><td>'+r.cat_label+'</td><td style="color:#3b9eff">'+r.doc_num+'</td><td class="wrap">'+r.owner+'</td><td>'+amt+'</td><td class="wrap">'+prop+'</td><td class="wrap">'+mail+'</td><td><div class="chips">'+chips+'</div></td><td>'+link+'</td></tr>';
+    const lnk=r.clerk_url?'<a class="ext" href="'+x(r.clerk_url)+'" target="_blank">View ↗</a>':'—';
+    return '<tr><td><span class="pill '+pc+'">'+s+'</span></td><td><span class="cb '+(CC[r.county_key]||'c-def')+'">'+(r.county||'—').replace(' County','')+'</span></td><td>'+x(r.filed||'—')+'</td><td>'+x(r.cat_label||'—')+'</td><td style="color:#3b9eff">'+x(r.doc_num||'—')+'</td><td class="w">'+x(r.owner||'—')+'</td><td>'+amt+'</td><td class="w">'+x(prop)+'</td><td class="w">'+x(mail)+'</td><td><div class="chips">'+chips+'</div></td><td>'+lnk+'</td></tr>';
   }).join('');
 }
-function exportCSV(){
-  const cols=['First Name','Last Name','Mailing Address','Mailing City','Mailing State','Mailing Zip','Property Address','Property City','Property State','Property Zip','Lead Type','Document Type','Date Filed','Document Number','Amount/Debt Owed','Seller Score','Motivated Seller Flags','Source','Public Records URL'];
+function csv(){
+  const cols=['First Name','Last Name','Mailing Address','Mailing City','Mailing State','Mailing Zip','Property Address','Property City','Property State','Property Zip','County','Lead Type','Document Type','Date Filed','Document Number','Amount/Debt Owed','Seller Score','Motivated Seller Flags','Source','Public Records URL'];
   const lines=[cols.join(',')];
-  filtered.forEach(r=>{
-    const p=(r.owner||'').split(' ');
-    const cells=[p[0]||'',p.slice(1).join(' ')||'',r.mail_address||'',r.mail_city||'',r.mail_state||'TX',r.mail_zip||'',r.prop_address||'',r.prop_city||'',r.prop_state||'TX',r.prop_zip||'',r.cat_label||'',r.doc_type||'',r.filed||'',r.doc_num||'',r.amount||'',r.score||30,(r.flags||[]).join('; '),'Harris County Clerk',r.clerk_url||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"');
-    lines.push(cells.join(','));
+  F.forEach(r=>{
+    const p=(r.owner||'').replace(/,/g,' ').split(/\s+/);
+    lines.push([p[0]||'',p.slice(1).join(' ')||'',r.mail_address||'',r.mail_city||'',r.mail_state||'TX',r.mail_zip||'',r.prop_address||'',r.prop_city||'',r.prop_state||'TX',r.prop_zip||'',r.county||'',r.cat_label||'',r.doc_type||'',r.filed||'',r.doc_num||'',r.amount!=null?r.amount:'',r.score||30,(r.flags||[]).join('; '),(r.county||'')+' Clerk',r.clerk_url||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
   });
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/csv'}));
-  a.download='harris_leads.csv';a.click();
+  a.download='texas_leads_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
-render();
+function x(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+boot();
 </script>
 </body>
 </html>
