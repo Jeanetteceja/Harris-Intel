@@ -1,11 +1,77 @@
-- name: Commit records
+name: Harris County Lead Scraper
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml dbfread playwright
+
+      - name: Install Playwright browsers
+        run: python -m playwright install --with-deps chromium
+
+      - name: Create output directories
+        run: mkdir -p dashboard data data/hcad
+
+      - name: Run scraper
+        env:
+          LOOKBACK_DAYS: "7"
+        run: python scraper/fetch.py
+
+      - name: Commit records
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git stash || true
-          git pull --rebase origin main || true
+          git pull origin main --rebase || true
           git stash pop || true
-          git add dashboard/records.json data/records.json || true
+          git add dashboard/records.json || true
+          git add data/records.json || true
           git add data/ghl_export.csv || true
-          git diff --cached --quiet || git commit -m "update leads $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git diff --cached --quiet || git commit -m "update leads"
           git push origin main || true
+
+  deploy-pages:
+    needs: scrape
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload dashboard
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard/
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
