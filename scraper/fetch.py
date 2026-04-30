@@ -464,9 +464,14 @@ async def main() -> None:
 
     d_from = datetime.strptime(date_from, "%m/%d/%Y").strftime("%Y-%m-%d")
     d_to   = datetime.strptime(date_to,   "%m/%d/%Y").strftime("%Y-%m-%d")
-    save_json(enriched, d_from, d_to)
+    
     save_ghl_csv(enriched)
-
+# Only overwrite if we actually got real records
+    if len(enriched) > 0:
+        save_json(enriched, d_from, d_to)
+        save_ghl_csv(enriched)
+    else:
+        log.warning("Zero records scraped — keeping existing records.json intact")
     log.info("── Summary ──")
     for cfg in COUNTIES.values():
         n = sum(1 for r in enriched if r.get("county") == cfg["name"])
